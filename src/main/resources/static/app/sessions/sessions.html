@@ -1,0 +1,30 @@
+<div class="jumbotron custom-jumbo">
+  <h1>Keep Calm And Ask Questions!</h1>
+  <p class="lead">Don't want to get up infront of everyone and ask your question?  No problem your can ask
+  it here and we will get back to you with an answer.</p>
+  <img src="../../images/keep-calm.png"/>
+  
+</div>
+      
+<h2>Usage</h2>
+<p>To ask your question, click "Ask Question" under the session you attended.</p>
+
+<div class="alert alert-info" ng-show="sessions.length == 0">
+  <p>There are currently no active sessions, check back soon!</p>
+</div>
+
+<div class="row">
+  <div class="col-md-4" ng-repeat="session in sessions">
+    <h2 ng-show="!hasRole('ROLE_ADMIN')">{{session.title}}</h2>
+    <h2 ng-show="hasRole('ROLE_ADMIN')"><a href="#!/createSession/{{session.id}}">{{session.title}}</a></h2>
+    <p>Date: {{session.sessionDate | date: 'shortDate'}}</p>
+    <p>Presenter: {{session.presenter}}</p>
+    <p>Conference: {{session.conference}}</p>
+    <p><a role="button" href="#!/question/{{session.id}}" class="btn btn-default">Ask Question</a></p>
+  </div>
+</div>
+
+<div ng-show="hasRole('ROLE_ADMIN')">
+  <h2>Admins</h2>
+  <a href="#!/createSession" class="btn btn-success">Create Session</a>
+</div>

@@ -1,0 +1,12 @@
+<h2>Enter Your Question Below</h2>
+<form role="form" name="questionForm">
+  <div class="form-group">
+    <label>Email address</label>
+    <input ng-model="question.email" type="email" class="form-control" placeholder="Enter email" required>
+  </div>
+  <div class="form-group">
+  	<label>Question</label>
+  	<textarea ng-model="question.content" placeholder="Why is the sky blue?" class="form-control" rows="3" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary" ng-disabled="questionForm.$invalid" ng-click="save()">Submit</button>
+</form>
