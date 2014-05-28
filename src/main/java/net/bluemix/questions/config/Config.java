@@ -22,6 +22,9 @@ import javax.sql.DataSource;
 import net.bluemix.questions.xauth.CustomUserDetailsService;
 import net.bluemix.questions.xauth.XAuthTokenConfigurer;
 
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.Cloud;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
@@ -68,6 +71,7 @@ public class Config {
     @Bean
     public TwilioRestClient twilioRestClient() {
       TwilioRestClient client = connectionFactory().service(TwilioRestClient.class);
+      
       return client;
     }
 
@@ -81,6 +85,16 @@ public class Config {
         }
       }
       return null;
+    }
+    
+    @Bean
+    public ConnectionFactory rabbitConnectionFactory() {
+      return connectionFactory().rabbitConnectionFactory();
+    }
+    
+    @Bean
+    public AmqpTemplate rabbitTemplate() {
+      return new RabbitTemplate(rabbitConnectionFactory());
     }
   }
 

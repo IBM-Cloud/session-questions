@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/twillio")
+@RequestMapping("/api/twilio")
 public class TwilioController {
   private static final Logger LOG = LoggerFactory.getLogger(TwilioController.class.getName());
   private static final String TOPIC = "/topic/questions";
@@ -40,9 +40,9 @@ public class TwilioController {
   
   @Autowired
   private SimpMessagingTemplate template;
-  
+
   @RequestMapping(method=RequestMethod.POST)
-  public void createQuestion(@RequestParam("MessageSid") String messageSid, @RequestParam("AccountSid") String accountId,
+  public String createQuestion(@RequestParam("MessageSid") String messageSid, @RequestParam("AccountSid") String accountId,
           @RequestParam("From") String from, @RequestParam("To") String to, @RequestParam("Body") String body) {
     Iterable<Session> sessions = sessionRepo.findSessionByNumber(to);
     Session theSession = null;
@@ -58,10 +58,11 @@ public class TwilioController {
       q.setNumber(from);
       q.setSession(theSession);
       q = questionRepo.save(q);
-      this.template.convertAndSend(TOPIC, q);
+      template.convertAndSend(TOPIC, q);
     } else {
       LOG.warn("Could not find a session for the phone number {1}.", new Object[]{to});
     }
+    return "Thanks for submitting your question, we will answer it shortly";
   }
 }
 
