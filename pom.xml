@@ -1,23 +1,9 @@
-<!--
- * Copyright IBM Corp. 2014
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.bluemix.questions</groupId>
   <artifactId>session-questions</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
   
   <!-- ====================================================================== -->
   <!-- P A R E N T -->
@@ -26,7 +12,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.0.2.RELEASE</version>
+    <version>1.1.4.RELEASE</version>
   </parent>
   
   <!-- ====================================================================== -->
@@ -57,123 +43,7 @@
       <url>http://repo.spring.io/milestone</url>
     </pluginRepository>
   </pluginRepositories>
-
-  <!-- ====================================================================== -->
-  <!-- P R O F I L E S -->
-  <!-- ====================================================================== -->
-  <profiles>
-    <profile>
-      <id>deploy</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.cloudfoundry</groupId>
-            <artifactId>cf-maven-plugin</artifactId>
-            <version>1.0.2</version>
-            <configuration>
-              <server>BlueMix</server>
-              <target>https://api.ng.bluemix.net</target>
-              <appname>session-questions</appname>
-              <url>${app-url}</url>
-              <org>${org}</org>
-              <space>${space}</space>
-              <buildpack>https://github.com/cloudfoundry/java-buildpack.git</buildpack>
-              <instances>1</instances>
-              <memory>512</memory>
-              <services>
-                <service>
-                  <name>send-grid-questions</name>
-                  <plan>free</plan>
-                  <label>sendgrid</label>
-                </service>
-                <service>
-                  <name>twilio-questions</name>
-                  <label>user-provided</label>
-                    <userProvidedCredentials>
-                      <url>https://api.twilio.com</url>
-                      <accountSID>${twilio-accountId}</accountSID>
-                      <authToken>${twilio-authToken}</authToken>
-                    </userProvidedCredentials>
-                </service>
-                <service>
-                  <name>rabbitmq-questions</name>
-                  <plan>lemur</plan>
-                  <label>cloudamqp</label>
-                </service>
-                 <!-- <service>
-                  <name>session-questions-sql</name>
-                  <plan>spark</plan>
-                  <label>cleardb</label>
-                </service> -->
-               <service>
-                  <name>session-questions-sql</name>
-                  <plan>turtle</plan>
-                  <label>elephantsql</label>
-                </service>
-              </services>
-              <env>
-                <!-- Sets the cloud profile when the app is deployed -->
-                <SPRING_PROFILES_ACTIVE>cloud</SPRING_PROFILES_ACTIVE>
-              </env>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>push</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-clean-plugin</artifactId>
-            <version>2.5</version>
-            <executions>
-              <execution>
-                <id>auto-clean</id>
-                <phase>initialize</phase>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>run</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-clean-plugin</artifactId>
-            <version>2.5</version>
-            <executions>
-              <execution>
-                <id>auto-clean</id>
-                <phase>initialize</phase>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  
   <!-- ====================================================================== -->
   <!-- D E P E N D E N C I E S -->
   <!-- ====================================================================== -->
@@ -182,51 +52,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-websocket</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-messaging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context-support</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.twilio.sdk</groupId>
-      <artifactId>twilio-java-sdk</artifactId>
-      <version>3.4.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <!--  <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-service-connector</artifactId>
-      <version>0.9.8</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>cloudfoundry-connector</artifactId>
-      <version>0.9.8</version>
-    </dependency>-->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-spring-service-connector</artifactId>
@@ -237,49 +62,25 @@
       <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
       <version>0.9.12.BUILD-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>9.1-901.jdbc4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.amqp</groupId>
-      <artifactId>spring-rabbit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.projectreactor</groupId>
-      <artifactId>reactor-tcp</artifactId>
-      <version>1.0.0.RELEASE</version>
-    </dependency>                
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <scope>runtime</scope>
-    </dependency>
   </dependencies>
-
+  
   <!-- ====================================================================== -->
   <!-- B U I L D -->
   <!-- ====================================================================== -->
-  <!-- Package as an executable jar -->
   <build>
     <defaultGoal>package</defaultGoal>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
   </build>
   
-    <!-- ====================================================================== -->
+  <!-- ====================================================================== -->
   <!-- P R O P E R T I E S -->
   <!-- ====================================================================== -->
   <properties>
     <space>dev</space>
   </properties>
+  
+  <modules>
+    <module>session-questions-data</module>
+    <module>session-questions-text</module>
+    <module>session-questions-web</module>
+  </modules>
 </project>

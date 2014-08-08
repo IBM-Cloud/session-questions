@@ -1,0 +1,62 @@
+<div class="sample-show-hide" ng-show="!edit || showDetails">
+  <h2 class="">Enter The Session Details</h2>
+  <form name="sessionForm" role="form">
+    <div class="form-group">
+      <label>Title</label>
+      <input ng-model="session.title" class="form-control" placeholder="My Awesome Sessions" required>
+    </div>
+    <div class="form-group">
+      <label>Presenter</label>
+      <input ng-model="session.presenter" class="form-control" placeholder="John Smith" required>
+    </div>
+    <div class="form-group">
+      <label>Event</label>
+      <input ng-model="session.conference" class="form-control" placeholder="Awesome Con" required>
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <div class="input-group">
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="openCalendar($event)"><i class="glyphicon glyphicon-calendar"></i>&nbsp;</button>
+        </span>
+        <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="session.sessionDate" is-open="opened" min-date="minDate" datepicker-options="dateOptions" placeholder="2014-01-01" required close-text="Close" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Twilio Number</label>
+      <input ng-model="session.number" class="form-control" placeholder="+16175555555">
+    </div>
+    <div class="checkbox">
+      <label>
+        <input ng-model="session.active" type="checkbox"> Active
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="sessionForm.$invalid">Save</button>
+    <button class="btn btn-danger" ng-click="delete()" ng-show="edit" ng-disabled="sessionForm.$invalid">Delete</button>
+  </form>
+</div>
+
+<div ng-show="edit">
+  <div class="row">
+    <div class="col-md-8">
+      <h2 ng-mouseover="setShowEditIcon(true)" ng-mouseout="setShowEditIcon(false)">Session Questions <span ng-click="show()" class="glyphicon glyphicon-pencil edit-icon" ng-show="showEditIcon"></span></h2>
+    </div>
+    <div class="col=mg-4">
+   	  <div class="btn-group questions-nav">
+        <button class="btn btn-default" ng-class="{active: filter==false}" type="button" ng-click="applyFilter(false)">Unanswered</button>
+        <button class="btn btn-default" ng-class="{active: filter==true}" type="button" ng-click="applyFilter(true)">Answered</button>
+        <button class="btn btn-default"  ng-class="{active: filter==undefined}" type="button" ng-click="applyFilter(undefined)">All</button>
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-info" ng-show="(questions | filter:{answered:filter}).length == 0">
+    <p>There are currently no questions, the page will update automatically as new questions come in.</p>
+  </div>
+  <table class="table table-hover questions-table">
+  	<tr ng-repeat="question in questions | filter:{answered:filter}">
+  	  <td style="width: 100%">{{question.content}}</td>
+  	  <td><span class="glyphicon glyphicon-share" ng-show="!question.answered" ng-click="open(question)"></span></td>
+  	  <td><span class="glyphicon glyphicon-trash" ng-click="deleteQuestion(question, $index)"></span><td>
+  	<tr>
+  </table>  
+</div>
